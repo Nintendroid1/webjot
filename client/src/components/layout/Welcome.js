@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 class Welcome extends Component {
   render() {
-    return (
+     return (
         <div className="jumbotron text-center">
           <h1 className="display-3">WebJot</h1>
           <p className="lead">Jot down ideas for your next web app project</p>

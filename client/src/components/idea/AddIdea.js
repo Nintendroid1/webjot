@@ -2,13 +2,6 @@ import React, {Component} from 'react';
 
 class AddIdea extends Component {
 
-  constructor(props) {
-    super(props);
-    this.addFeatureInput = this.addFeatureInput.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
   state = {
     featureCount: 1,
     title: '',
@@ -17,16 +10,14 @@ class AddIdea extends Component {
     feature0: ''
   };
 
-  addFeatureInput() {
+  addFeatureInput =() => {
     this.setState({featureCount: this.state.featureCount + 1});
     let featureName = `feature${this.state.featureCount}`;
     this.setState({[featureName]: ''})
-  }
+  };
 
-  handleSubmit(e) {
+  handleSubmit =(e) => {
     e.preventDefault();
-
-
     const newIdea = {
       title: this.state.title,
       content: this.state.content,
@@ -45,13 +36,12 @@ class AddIdea extends Component {
           }
       }
     }
-
     this.props.addIdea(newIdea);
-  }
+  };
 
-  handleChange(e) {
+  handleChange = (e) => {
     this.setState({[e.target.name]: e.target.value})
-  }
+  };
 
   render() {
 

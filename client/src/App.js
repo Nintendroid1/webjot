@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import axios from 'axios';
 import Navbar from "./components/layout/Navbar";
 import Welcome from "./components/layout/Welcome";
 import About from './components/layout/About';
@@ -33,13 +34,55 @@ let initialIdeas = [{
 class App extends Component {
 
   state = {
-    ideas: initialIdeas
+    ideas: initialIdeas,
+    authenticated: false,
   };
 
   addIdea =(newIdea) => {
     this.setState({ideas: [...this.state.ideas, newIdea]});
+    axios
+      .post('/ideas', newIdea)
+      .then(res =>
+        console.log(res)
+      )
+      .catch(err =>
+        console.log(err)
+      );
+  };
+
+  editIdea = (editedIdea) => {
 
   };
+
+  deleteIdea = (ideaID) => {
+
+  };
+
+  displayIdeas = () => {
+
+  };
+
+  registerUser = (newUser) => {
+
+  };
+
+  loginUser = (user) => {
+    axios
+      .post('/users/login', user)
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err =>
+        console.log(err)
+      );
+  };
+
+
+  logoutUser = () => {
+
+  };
+
+
 
   render() {
     return (
@@ -51,7 +94,7 @@ class App extends Component {
               <Route exact path="/" component={Welcome}/>
               <Route exact path="/about" component={About}/>
               <Route exact path="/users/login">
-                <Login/>
+                <Login loginUser={this.loginUser}/>
               </Route>
               <Route exact path="/users/register">
                 <Register />

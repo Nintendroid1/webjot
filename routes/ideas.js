@@ -32,7 +32,7 @@ router.get('/edit/:id', ensureAuthenticated, (req, res) => {
     });
 });
 
-// Process Form
+// Add Idea
 router.post('/',ensureAuthenticated, (req, res) => {
   let errors = [];
 
@@ -58,7 +58,7 @@ router.post('/',ensureAuthenticated, (req, res) => {
       title: req.body.title,
       content: req.body.content,
       user: req.user.id,
-      features: [...req.body.features],
+      features: req.body.features,
       technologies: req.body.technologies
     };
     new Idea(newIdea)

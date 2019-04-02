@@ -7,7 +7,7 @@ class Idea extends Component {
       <div className="card mb-5">
         <div className="card-header p-4">
           <h3 className="">{idea.title}</h3>
-          <span  className=""> Posted on {idea.date}</span>
+          <span  className=""> Posted on 00/00/0000</span>
         </div>
         <div className="card-body p-4">
           <p className="card-text lead">{idea.content}</p>

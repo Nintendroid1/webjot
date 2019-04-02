@@ -22,8 +22,7 @@ class AddIdea extends Component {
       title: this.state.title,
       content: this.state.content,
       technologies: this.state.technology,
-      features: [],
-      date: '000/000/0000'
+      features: []
     };
 
     let list = Object.keys(this.state);

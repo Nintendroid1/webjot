@@ -3,7 +3,6 @@ import Idea from "./Idea";
 
 class Ideas extends Component {
   render() {
-     console.log(this.props.ideas);
     return (
       <div>
          {this.props.ideas.map(idea => {

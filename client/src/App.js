@@ -10,33 +10,26 @@ import Register from "./components/auth/Register";
 import AddIdea from "./components/idea/AddIdea";
 import EditIdea from "./components/idea/EditIdea";
 
-let initialIdeas = [{
-  title: 'Create a Blogging App',
-  content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium alias aut consectetur cum deleniti error ex expedita facere fugit illo, iure labore magni nam nisi odit omnis quae quas quasi quibusdam quos sit tenetur vitae. Dolorum magnam nobis tempore temporibus.',
-  technologies: 'Nodejs, React, Redux',
-  features: [
-    'Users can register and login',
-    'Logged in user can added or edit post',
-    'Passport authentication used'
-  ]
-},
-  {
-    title: 'Chatting App',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium alias aut consectetur cum deleniti error ex expedita facere fugit illo, iure labore magni nam nisi odit omnis quae quas quasi quibusdam quos sit tenetur vitae. Dolorum magnam nobis tempore temporibus.',
-    technologies: 'Nodejs, React, Socket.io',
-    features: [
-      'Users can chat in private and public',
-      'Logged in user can add and edit their profile',
-      'Email Authentication'
-    ]
-  }];
-
 class App extends Component {
 
   state = {
-    ideas: initialIdeas,
     authenticated: false,
+    gotData: false
   };
+
+  componentDidMount() {
+    let arr =[];
+    axios
+      .get('/ideas')
+      .then(res =>
+        res.data.map(idea => arr.push(idea))
+      ).then(result => this.setState({ideas: [...arr]}))
+      .then(result => console.log(this.state.ideas))
+      .then(result => this.setState({gotData: true}))
+      .catch(err =>
+        console.log(err)
+      );
+  }
 
   addIdea =(newIdea) => {
     this.setState({ideas: [...this.state.ideas, newIdea]});
@@ -67,6 +60,7 @@ class App extends Component {
   };
 
   loginUser = (user) => {
+    console.log(`loggin in user`);
     axios
       .post('/users/login', user)
       .then(res => {
@@ -79,7 +73,14 @@ class App extends Component {
 
 
   logoutUser = () => {
-
+    axios
+      .get('/users/logout')
+      .then(res =>
+        console.log(res)
+      )
+      .catch(err =>
+        console.log(err)
+      );
   };
 
 
@@ -88,7 +89,7 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <Navbar/>
+          <Navbar logoutUser={this.logoutUser}/>
           <div className="container">
             <Switch>
               <Route exact path="/" component={Welcome}/>
@@ -100,7 +101,7 @@ class App extends Component {
                 <Register />
               </Route>
               <Route exact path="/ideas">
-                <Ideas ideas={this.state.ideas}/>
+                { this.state.gotData && <Ideas ideas={this.state.ideas}/>}
               </Route>
               <Route exact path="/ideas/add">
                 <AddIdea addIdea={this.addIdea}/>

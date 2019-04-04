@@ -10,14 +10,19 @@ import Register from "./components/auth/Register";
 import AddIdea from "./components/idea/AddIdea";
 import EditIdea from "./components/idea/EditIdea";
 
+import setAuthToken from './utils/setAuthToken';
+import jwt_decode from 'jwt-decode';
+
 class App extends Component {
 
   state = {
-    authenticated: false,
-    gotData: false
+    isAuthenticated: false,
+    gotData: false,
+    user: {}
   };
 
   componentDidMount() {
+    this.setState({gotData: false});
     let arr =[];
     axios
       .get('/ideas')
@@ -55,16 +60,33 @@ class App extends Component {
 
   };
 
-  registerUser = (newUser) => {
+  registerUser = (newUser, history) => {
+    axios
+       .post('/api/users/register', newUser)
+       .then(res => history.push('/login'))
+       .catch(err =>
+          console.log(err)
+       );
 
   };
 
   loginUser = (user) => {
-    console.log(`loggin in user`);
     axios
-      .post('/users/login', user)
+      .post('/api/users/login', user)
       .then(res => {
-        console.log(res)
+        // Save to localStorage
+        const { token } = res.data;
+        // Set token to ls
+        localStorage.setItem('jwtToken', token);
+        // Set token to Auth header
+        setAuthToken(token);
+        // Decode token to get user data
+        const decoded = jwt_decode(token);
+        // Set current user
+        this.setState({
+          isAuthenticated: true,
+          user: decoded
+        })
       })
       .catch(err =>
         console.log(err)
@@ -72,11 +94,12 @@ class App extends Component {
   };
 
 
+
   logoutUser = () => {
     axios
       .get('/users/logout')
       .then(res =>
-        console.log(res)
+         this.setState({isAuthenticated: false})
       )
       .catch(err =>
         console.log(err)
@@ -95,10 +118,10 @@ class App extends Component {
               <Route exact path="/" component={Welcome}/>
               <Route exact path="/about" component={About}/>
               <Route exact path="/users/login">
-                <Login loginUser={this.loginUser}/>
+                <Login isAuthenticated={this.state.isAuthenticated} loginUser={this.loginUser}/>
               </Route>
               <Route exact path="/users/register">
-                <Register />
+                <Register registerUser={this.registerUser} />
               </Route>
               <Route exact path="/ideas">
                 { this.state.gotData && <Ideas ideas={this.state.ideas}/>}

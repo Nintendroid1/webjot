@@ -32,7 +32,7 @@ class Navbar extends Component {
                 </div>
               </li>
               <li className="nav-item">
-                <button onClick={this.props.logoutUser} className="nav-link">Logout</button>
+                <a onClick={this.props.logoutUser} className="nav-link">Logout</a>
               </li>
 
               <li className="nav-item">

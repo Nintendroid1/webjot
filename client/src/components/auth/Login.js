@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
+import {Redirect} from 'react-router-dom';
 
 class Login extends Component {
-
    state = {
       email: '',
       password: ''
@@ -17,12 +17,13 @@ class Login extends Component {
    };
 
   render() {
+     // if(this.props.isAuthenticated) return <Redirect to='/ideas'/>;
     return (
       <div className="row">
         <div className="col-md-6 mx-auto">
           <div className="card card-body">
               <h3 className="text-center">Account Login</h3>
-              <form onSubmit={this.handleSubmit}>
+              <form onSubmit={event => this.handleSubmit(event)}>
                 <div className="form-group">
                   <label htmlFor="email">Email</label>
                   <input onChange={this.handleChange} placeholder="Email"  type="email" name="email" className="form-control" required>
@@ -30,7 +31,7 @@ class Login extends Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="password">Password</label>
-                  <input onChange={this.handleChange} placeholder="Password"  type="password" name="password" className="form-control" required>
+                  <input onChange={this.handleChange} placeholder="Password" type="password" name="password" className="form-control" required>
                   </input>
                 </div>
                 <button type="submit" className="btn btn-outline-primary">Submit</button>

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {withRouter} from "react-router-dom";
 
 class AddIdea extends Component {
 
@@ -35,7 +36,7 @@ class AddIdea extends Component {
           }
       }
     }
-    this.props.addIdea(newIdea);
+    this.props.addIdea(newIdea, this.props.history);
   };
 
   handleChange = (e) => {
@@ -88,4 +89,4 @@ class AddIdea extends Component {
   }
 }
 
-export default AddIdea;
+export default withRouter(AddIdea);

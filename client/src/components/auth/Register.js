@@ -20,7 +20,7 @@ class Register extends Component {
   };
 
   componentDidMount() {
-    if (this.props.isAuthenticated) {
+    if (localStorage.auth === true) {
       this.props.history.push('/ideas');
     }
   }

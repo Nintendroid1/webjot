@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Redirect} from 'react-router-dom';
+import {Redirect, withRouter} from 'react-router-dom';
 
 class Login extends Component {
    state = {
@@ -13,10 +13,22 @@ class Login extends Component {
 
    handleSubmit = (e) => {
       e.preventDefault();
-      this.props.loginUser(this.state);
+      this.props.loginUser(this.state, this.props.history);
    };
 
-  render() {
+   componentDidMount() {
+      if(localStorage.auth === true) {
+         this.props.history.push('/ideas');
+      }
+   }
+
+   componentWillReceiveProps() {
+      if (localStorage.auth === true) {
+         this.props.history.push('/ideas');
+      }
+   }
+
+   render() {
      // if(this.props.isAuthenticated) return <Redirect to='/ideas'/>;
     return (
       <div className="row">
@@ -43,4 +55,4 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default withRouter(Login);

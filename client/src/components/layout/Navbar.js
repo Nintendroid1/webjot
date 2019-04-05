@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
+import {withRouter} from "react-router-dom";
 
 class Navbar extends Component {
+
+  onLogout = () => {
+    this.props.logoutUser(this.props.history);
+  };
+
   render() {
     return (
       <nav className="navbar navbar-expand-sm navbar-dark bg-dark mb-3">
@@ -21,9 +27,9 @@ class Navbar extends Component {
                 <a className="nav-link" href="/about">About</a>
               </li>
             </ul>
+            {this.props.auth === "true" &&
             <ul className="navbar-nav ml-auto">
-
-              <li className="nav-item dropdown">
+               <li className="nav-item dropdown">
                 <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarDropdownMenuLink">Project
                   Ideas</a>
                 <div className="dropdown-menu">
@@ -31,17 +37,20 @@ class Navbar extends Component {
                   <a href="/ideas/add" className="dropdown-item">Add Idea</a>
                 </div>
               </li>
-              <li className="nav-item">
-                <a onClick={this.props.logoutUser} className="nav-link">Logout</a>
-              </li>
 
+              <li className="nav-item">
+                <a onClick={this.onLogout} href="" className="nav-link">Logout</a>
+              </li>
+            </ul>}
+            {this.props.auth === "false" &&
+            <ul className="navbar-nav ml-auto">
               <li className="nav-item">
                 <a href="/users/login" className="nav-link">Login</a>
               </li>
               <li className="nav-item">
                 <a href="/users/register" className="nav-link">Register</a>
               </li>
-            </ul>
+            </ul>}
           </div>
         </div>
       </nav>
@@ -49,4 +58,4 @@ class Navbar extends Component {
   }
 }
 
-export default Navbar;
+export default withRouter(Navbar);

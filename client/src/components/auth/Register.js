@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { withRouter } from 'react-router-dom';
 
 class Register extends Component {
 
@@ -15,9 +16,14 @@ class Register extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.registerUser(this.state);
+    this.props.registerUser(this.state, this.props.history);
   };
 
+  componentDidMount() {
+    if (this.props.isAuthenticated) {
+      this.props.history.push('/ideas');
+    }
+  }
 
   render() {
     return (
@@ -55,4 +61,4 @@ class Register extends Component {
   }
 }
 
-export default Register;
+export default withRouter(Register);

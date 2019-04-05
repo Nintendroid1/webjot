@@ -12,6 +12,8 @@ import EditIdea from "./components/idea/EditIdea";
 
 import setAuthToken from './utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
+import PrivateRoute from "./components/common/PrivateRoute";
+
 
 class App extends Component {
 
@@ -21,19 +23,42 @@ class App extends Component {
     user: {}
   };
 
+
+
   componentDidMount() {
-    this.setState({gotData: false});
-    let arr =[];
-    axios
-      .get('/ideas')
-      .then(res =>
-        res.data.map(idea => arr.push(idea))
-      ).then(result => this.setState({ideas: [...arr]}))
-      .then(result => console.log(this.state.ideas))
-      .then(result => this.setState({gotData: true}))
-      .catch(err =>
-        console.log(err)
-      );
+    // this.setState({gotData: false});
+    // let arr =[];
+    // axios
+    //   .get('/ideas')
+    //   .then(res =>
+    //     res.data.map(idea => arr.push(idea))
+    //   ).then(result => this.setState({ideas: [...arr]}))
+    //   .then(result => console.log(this.state.ideas))
+    //   .then(result => this.setState({gotData: true}))
+    //   .catch(err =>
+    //     console.log(err)
+    //   );
+
+
+
+// Check for token
+    if (localStorage.jwtToken) {
+      // Set auth token header auth
+      setAuthToken(localStorage.jwtToken);
+      // Decode token and get user info and exp
+      const decoded = jwt_decode(localStorage.jwtToken);
+      // Set user and isAuthenticated
+      this.setState({user: decoded});
+
+      // Check for expired token
+      const currentTime = Date.now() / 1000;
+      if (decoded.exp < currentTime) {
+        // Logout user
+        this.logoutUser();
+        // Redirect to login
+        window.location.href = '/login';
+      }
+    }
   }
 
   addIdea =(newIdea) => {
@@ -63,7 +88,7 @@ class App extends Component {
   registerUser = (newUser, history) => {
     axios
        .post('/api/users/register', newUser)
-       .then(res => history.push('/login'))
+       .then(res => history.push('/users/login'))
        .catch(err =>
           console.log(err)
        );
@@ -86,7 +111,7 @@ class App extends Component {
         this.setState({
           isAuthenticated: true,
           user: decoded
-        })
+        });
       })
       .catch(err =>
         console.log(err)
@@ -96,14 +121,12 @@ class App extends Component {
 
 
   logoutUser = () => {
-    axios
-      .get('/users/logout')
-      .then(res =>
-         this.setState({isAuthenticated: false})
-      )
-      .catch(err =>
-        console.log(err)
-      );
+    // Remove token from localStorage
+    localStorage.removeItem('jwtToken');
+    // Remove auth header for future requests
+    setAuthToken(false);
+    // Set current user to {} which will set isAuthenticated to false
+    this.setState({user: {}})
   };
 
 
@@ -114,24 +137,29 @@ class App extends Component {
         <div className="App">
           <Navbar logoutUser={this.logoutUser}/>
           <div className="container">
-            <Switch>
               <Route exact path="/" component={Welcome}/>
               <Route exact path="/about" component={About}/>
               <Route exact path="/users/login">
                 <Login isAuthenticated={this.state.isAuthenticated} loginUser={this.loginUser}/>
               </Route>
               <Route exact path="/users/register">
-                <Register registerUser={this.registerUser} />
+                <Register isAuthenticated={this.state.isAuthenticated} registerUser={this.registerUser} />
               </Route>
-              <Route exact path="/ideas">
-                { this.state.gotData && <Ideas ideas={this.state.ideas}/>}
-              </Route>
-              <Route exact path="/ideas/add">
+
+            <Switch>
+              <PrivateRoute isAuthenticated={this.state.isAuthenticated} exact path="/ideas">
+                 <Ideas ideas={this.state.ideas}/>
+              </PrivateRoute>
+            </Switch>
+            <Switch>
+              <PrivateRoute isAuthenticated={this.state.isAuthenticated} exact path="/ideas/add">
                 <AddIdea addIdea={this.addIdea}/>
-              </Route>
-              <Route exact path="/ideas/edit">
+              </PrivateRoute>
+            </Switch>
+            <Switch>
+              <PrivateRoute isAuthenticated={this.state.isAuthenticated} exact path="/ideas/edit">
                 <EditIdea/>
-              </Route>
+              </PrivateRoute>
             </Switch>
           </div>
         </div>

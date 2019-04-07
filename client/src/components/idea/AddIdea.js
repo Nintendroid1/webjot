@@ -26,16 +26,10 @@ class AddIdea extends Component {
       features: []
     };
 
-    let list = Object.keys(this.state);
-    let values =  Object.entries(this.state);
-
     for(let i = 0; i < this.state.featureCount; i++) {
-      for(let j = 0; j < list.length; j++) {
-          if(`feature${i}` === list[j]) {
-            newIdea.features.push(values[j][1]);
-          }
-      }
+      newIdea.features.push(this.state[`feature${i}`])
     }
+
     this.props.addIdea(newIdea, this.props.history);
   };
 
